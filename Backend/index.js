@@ -1,17 +1,25 @@
 require("dotenv").config();
 
 const express = require("express");
-//const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const authRoute = require("./schemas/Routes/AuthRoute");
 
-//const { HoldingsModel } = require("./model/HoldingsModel");
-//const { UserModel } = require("./model/UserModel");
+const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./model/user");
+const { HoldingsModel } = require("./model/HoldingsModel");
+const authRoutes = require('./routes/authRoutes')
+
 
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
+const user = require("./model/user");
+
+
+
 
 const PORT = process.env.PORT || 3004;
 const uri = process.env.MONGO_URL;
@@ -21,13 +29,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-mongoose
-  .connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB is  connected successfully"))
-  .catch((err) => console.error(err));
+const sessionOptions = {
+  
+  secret: 'a94f54a8-3456-4f34-9f34-345678901234',
+  resave: false,
+  saveUninitialized: true
+};
 
 // app.get("/addHoldings", async (req, res) => {
 //   let tempHoldings = [
@@ -221,21 +228,238 @@ app.post("/newOrder", async (req, res) => {
   res.send("Order saved!");
 });
 
+
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()))
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// app.post("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: req.body.email,
+//     age: req.body.age,
+//     country: req.body.country,
+//     username: req.body.username
+
+//   });
+//   demouser.save();
+
+//   app.get("/demouser", async (req, res) => {
+//     let fakeUser = new User({
+//       email: "Mdhasan2@gmail.com",
+//       age: 20,
+//       country: "India",
+//       username: "HasanMeraj"
+  
+//     });
+    
+
+//   let registereduser = await User.register(fakeUser, "demouser");
+//   res.send(registereduser);
+// });
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan2@gmail.com",
+//     age: 20,
+//     country: "India",
+//     username: "HasanMeraj"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan22@gmail.com",
+//     age: 39,
+//     country: "India",
+//     username: "HasanMeraj3"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+app.get("/demouser", async (req, res) => {
+  let fakeUser = new User({
+    email: "Mdhasan24@gmail.com",
+    age: 16,
+    country: "India",
+    username: "HasanMeraj6"
+
+  });
+  
+
+let registereduser = await User.register(fakeUser, "demouser");
+res.send(registereduser);
+});
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan24@gmail.com",
+//     age: 30,
+//     country: "India",
+//     username: "HasanMeraj2"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan20@gmail.com",
+//     age: 20,
+//     country: "India",
+//     username: "HasanMeraj1"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan920@gmail.com",
+//     age: 20,
+//     country: "AFG",
+//     username: "HasanMeraj5"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan2g0@gmail.com",
+//     age: 80,
+//     country: "India",
+//     username: "HasanMeraj7"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan2g0@gmail.com",
+//     age: 70,
+//     country: "India",
+//     username: "HasanMeraj8"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan20f@gmail.com",
+//     age: 60,
+//     country: "USA",
+//     username: "HasanMeraj9"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan209@gmail.com",
+//     age: 50,
+//     country: "USA",
+//     username: "HasanMeraj0"
+
+//   });
+  
+
+// let registereduser = await User.register(fakeUser, "demouser");
+// res.send(registereduser);
+// });
+
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan9420@gmail.com",
+//     age: 40,
+//     country: "AFG",
+//     username: "HasanMeraj5dc"
+
+//   });
+
+//   let registereduser = await User.register(fakeUser, "demouser");
+//   res.send(registereduser);
+//   });
+
+  
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan90@gmail.com",
+//     age: 50,
+//     country: "AFG",
+//     username: "HasanMerajdf5"
+
+//   });
+
+//   let registereduser = await User.register(fakeUser, "demouser");
+//   res.send(registereduser);
+//   });
+
+  
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "Mdhasan92@gmail.com",
+//     age: 25,
+//     country: "AFG",
+//     username: "HasanMerajdsf"
+
+//   });
+
+//   let registereduser = await User.register(fakeUser, "demouser");
+//   res.send(registereduser);
+//   });
+
+// app.get("/Signup", async (req, res) => {
+//   let Signup = await user.find({});
+//   res.json(Signup);
+// });
+
+// app.post("/Signup", async (req, res) => {
+//   let {username, email, age, country, password } = req.body;
+//   const newUser = new User({ email, username });
+//   constregisteredUser = await User.register(newUser, password);
+//   console.log(registeredUser);
+//   req.flash("success","Welcome to the MerajStocks!");
+//   res.redirect("/Home");
+// });
+
+//app.use('/api', authRoutes);
+
 app.listen(PORT, () => {
   console.log("App started!");
   mongoose.connect(uri);
   console.log("DB started!");
 });
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-app.use(cookieParser());
 
-app.use(express.json());
-
-app.use("/", authRoute);
