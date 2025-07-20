@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import pandas as pd
 
 # Connect to the MongoDB cluster
-client = MongoClient("mongodb+srv://mdhasanmeraj8:Mdhasan123@myprojectcluster.ehcwr.mongodb.net/Myproject?retryWrites=true&w=majority&appName=MyProjectCluster")
+client = MongoClient("mongodb+srv://---mongodb_credentials")
 
 # Access the database and the collection
 db = client['Myproject']
